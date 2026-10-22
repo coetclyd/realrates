@@ -4,6 +4,8 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createPlainClient } from '@supabase/supabase-js';
+import { supabaseUrl, supabaseKey } from '@/lib/supabase/env';
 import { SITE_URL, REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES } from '@/lib/options';
 
 export type FormState = { ok?: boolean; error?: string; message?: string; email?: string; next?: string };
@@ -34,7 +36,11 @@ export async function sendMagicLink(_: FormState, fd: FormData): Promise<FormSta
   const email = str(fd, 'email').toLowerCase();
   const next = str(fd, 'next') || '/submit';
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: 'Enter a valid email address.' };
-  const supabase = await createClient();
+  // Plain client with the implicit flow: the sign-in tokens come back inside the email link,
+  // so it works whichever browser or email app opens it (no code stored in the requesting browser).
+  const supabase = createPlainClient(supabaseUrl(), supabaseKey(), {
+    auth: { flowType: 'implicit', persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
   const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/submit';
   const { error } = await supabase.auth.signInWithOtp({
     email,

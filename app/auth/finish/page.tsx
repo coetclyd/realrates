@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/client';
 // Email link lands here. Handles every format Supabase may send back:
 // tokens after '#' (works in any browser), ?code= (same browser), or ?token_hash=.
 export default function FinishSignIn() {
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
+  const [next, setNext] = useState('/submit');
 
   useEffect(() => {
     const run = async () => {
@@ -16,25 +17,29 @@ export default function FinishSignIn() {
       const next = nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/submit';
       const supabase = createClient();
 
-      let ok = false;
+      setNext(next);
+      let err: string | null = null;
       const access = hash.get('access_token');
       const refresh = hash.get('refresh_token');
       const code = url.searchParams.get('code');
       const tokenHash = url.searchParams.get('token_hash');
 
       if (access && refresh) {
-        ok = !(await supabase.auth.setSession({ access_token: access, refresh_token: refresh })).error;
+        err = (await supabase.auth.setSession({ access_token: access, refresh_token: refresh })).error?.message ?? null;
       } else if (code) {
-        ok = !(await supabase.auth.exchangeCodeForSession(code)).error;
+        err = (await supabase.auth.exchangeCodeForSession(code)).error?.message ?? null;
       } else if (tokenHash) {
-        ok = !(await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'email' })).error;
+        err = (await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'email' })).error?.message ?? null;
+      } else {
+        err = hash.get('error_description') || url.searchParams.get('error_description') || 'No sign-in details found in the link.';
       }
+      console.log('[auth/finish]', { hadHash: Boolean(access), hadCode: Boolean(code), hadTokenHash: Boolean(tokenHash), err });
+      const ok = !err;
 
       if (ok) {
         window.location.replace(next);
       } else {
-        setFailed(true);
-        window.location.replace(`/login?error=link&next=${encodeURIComponent(next)}`);
+        setFailed(err);
       }
     };
     run();
@@ -43,7 +48,12 @@ export default function FinishSignIn() {
   return (
     <div className="prose">
       <h1>{failed ? 'Sign-in link didn’t work' : 'Signing you in…'}</h1>
-      <p className="muted">{failed ? 'Taking you back to request a new one.' : 'One moment.'}</p>
+      {failed ? (
+        <>
+          <p className="notice error">Reason: {failed}</p>
+          <p><a className="btn" href={`/login?next=${encodeURIComponent(next)}`}>Request a new link</a></p>
+        </>
+      ) : <p className="muted">One moment.</p>}
     </div>
   );
 }
