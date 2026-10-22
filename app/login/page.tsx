@@ -11,7 +11,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<Re
     <div style={{ maxWidth: 480 }}>
       <h1>Sign in</h1>
       {pick(sp.error) === 'link' && (
-        <p className="notice error">That login link has expired or was already used. Request a new one below.</p>
+        <p className="notice error">That link had expired or was already used (some email apps open links automatically). Request a code below and type it in instead.</p>
       )}
       <LoginForm next={next.startsWith('/') ? next : '/submit'} />
     </div>

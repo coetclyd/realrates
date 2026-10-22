@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { SITE_URL, REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES } from '@/lib/options';
 
-export type FormState = { ok?: boolean; error?: string; message?: string };
+export type FormState = { ok?: boolean; error?: string; message?: string; email?: string; next?: string };
 
 const str = (fd: FormData, k: string) => {
   const v = fd.get(k);
@@ -43,7 +43,19 @@ export async function sendMagicLink(_: FormState, fd: FormData): Promise<FormSta
   if (error) {
     return { error: error.status === 429 ? 'Too many emails sent. Wait a few minutes and try again.' : 'Could not send the email. Try again shortly.' };
   }
-  return { ok: true, message: `Login link sent to ${email}. Open it on this device to continue.` };
+  return { ok: true, email, next: safeNext, message: `We've emailed ${email} a 6-digit code and a login link.` };
+}
+
+export async function verifyCode(_: FormState, fd: FormData): Promise<FormState> {
+  const email = str(fd, 'email').toLowerCase();
+  const token = str(fd, 'code').replace(/\s/g, '');
+  const next = str(fd, 'next');
+  const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/submit';
+  if (!/^\d{6,8}$/.test(token)) return { ok: true, email, next: safeNext, error: 'Enter the code from the email (numbers only).' };
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
+  if (error) return { ok: true, email, next: safeNext, error: 'That code is wrong or has expired. Check the latest email, or request a new one.' };
+  redirect(safeNext);
 }
 
 // ---------- Submit a rate ----------
