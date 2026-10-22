@@ -43,7 +43,7 @@ export async function sendMagicLink(_: FormState, fd: FormData): Promise<FormSta
   if (error) {
     return { error: error.status === 429 ? 'Too many emails sent. Wait a few minutes and try again.' : 'Could not send the email. Try again shortly.' };
   }
-  return { ok: true, email, next: safeNext, message: `We've emailed ${email} a 6-digit code and a login link.` };
+  return { ok: true, email, next: safeNext, message: `We've emailed ${email} a sign-in link. Use only the newest email.` };
 }
 
 export async function verifyCode(_: FormState, fd: FormData): Promise<FormState> {

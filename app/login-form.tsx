@@ -12,14 +12,14 @@ function CodeForm({ email, next, notice }: { email: string; next: string; notice
       <input type="hidden" name="next" value={next} />
       <div className="field">
         <label htmlFor="code">
-          Enter the code
-          <span className="hint">Type the code from the email, or tap the link in it. The code works in any browser or app.</span>
+          Check your email
+          <span className="hint">Tap the link in the email <strong>in this same browser</strong>. If the email also shows a code, you can type it here instead.</span>
         </label>
         <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,9}" maxLength={9} required autoFocus
           style={{ fontSize: '1.5rem', letterSpacing: '0.3em', textAlign: 'center' }} />
       </div>
       {state.error && <p className="notice error" role="alert">{state.error}</p>}
-      <button className="btn block" disabled={pending}>{pending ? 'Checking…' : 'Sign in'}</button>
+      <button className="btn block" disabled={pending}>{pending ? 'Checking…' : 'Sign in with code'}</button>
       <p className="small muted" style={{ marginTop: 10, marginBottom: 0 }}>
         No email? Check spam, or <a href={`?next=${encodeURIComponent(next)}`}>start again</a>.
       </p>
@@ -38,12 +38,12 @@ export default function LoginForm({ next = '/submit' }: { next?: string }) {
       <div className="field">
         <label htmlFor="email">
           Your email
-          <span className="hint">We email you a sign-in code. Your email is never shown or linked to your rates.</span>
+          <span className="hint">We email you a sign-in link. Your email is never shown or linked to your rates.</span>
         </label>
         <input id="email" name="email" type="email" inputMode="email" autoComplete="email" required />
       </div>
       {state.error && <p className="notice error" role="alert">{state.error}</p>}
-      <button className="btn block" disabled={pending}>{pending ? 'Sending…' : 'Email me a sign-in code'}</button>
+      <button className="btn block" disabled={pending}>{pending ? 'Sending…' : 'Email me a sign-in link'}</button>
     </form>
   );
 }
