@@ -38,7 +38,7 @@ export async function sendMagicLink(_: FormState, fd: FormData): Promise<FormSta
   const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/submit';
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${await origin()}/auth/callback?next=${encodeURIComponent(safeNext)}` },
+    options: { emailRedirectTo: `${await origin()}/auth/finish?next=${encodeURIComponent(safeNext)}` },
   });
   if (error) {
     return { error: error.status === 429 ? 'Too many emails sent. Wait a few minutes and try again.' : 'Could not send the email. Try again shortly.' };
