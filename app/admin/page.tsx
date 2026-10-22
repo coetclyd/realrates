@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { isConfigured } from '@/lib/supabase/env';
 import LoginForm from '../login-form';
@@ -20,16 +21,8 @@ export default async function AdminPage() {
     return (<div style={{ maxWidth: 480 }}><h1>Admin</h1><LoginForm next="/admin" /></div>);
   }
   const { data: isAdmin } = await supabase.rpc('is_admin');
-  if (!isAdmin) {
-    return (
-      <div className="prose">
-        <h1>Not an admin</h1>
-        <p>You&apos;re signed in as {user.email}, but this account isn&apos;t an admin yet.</p>
-        <p className="muted small">To make it one, run this in Supabase SQL Editor:</p>
-        <pre className="card" style={{ whiteSpace: 'pre-wrap' }}>{`insert into public.admins (user_id)\nselect id from auth.users where email = '${user.email}';`}</pre>
-      </div>
-    );
-  }
+  // Non-admins never see this page: send them to the normal rate form.
+  if (!isAdmin) redirect('/submit');
 
   const [comments, pendingCos, allCos, abuse, removals] = await Promise.all([
     supabase.from('comments').select('id, body, flags, created_at, companies(name)').eq('status', 'pending').order('created_at').limit(100),
