@@ -1,5 +1,6 @@
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'RealRates';
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '');
+const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '';
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || vercelUrl || 'http://localhost:3000').replace(/\/$/, '');
 export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || '';
 export const OPERATOR_NAME = process.env.NEXT_PUBLIC_OPERATOR_NAME || SITE_NAME;
 
