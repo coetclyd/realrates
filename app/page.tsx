@@ -2,11 +2,12 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 import { isConfigured } from '@/lib/supabase/env';
 import { REGIONS, pick } from '@/lib/options';
-import { Filters, Results, ShareBand, NotConfigured, type SearchRow } from './components';
+import { Filters, Results, ShareBand, NotConfigured, Progress, type SearchRow } from './components';
 
 export const dynamic = 'force-dynamic';
 
 type SP = Promise<Record<string, string | string[] | undefined>>;
+type Stats = { reports: number; companies_live: number; regions: number };
 
 export default async function Home({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
@@ -14,6 +15,7 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
 
   let rows: SearchRow[] = [];
   let failed = false;
+  let stats = null as Stats | null;
   if (isConfigured()) {
     const supabase = await createClient();
     const { data, error } = await supabase.rpc('search_rates', {
@@ -25,6 +27,8 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
     });
     if (error) failed = true;
     rows = (data as SearchRow[]) ?? [];
+    const st = await supabase.rpc('site_stats');
+    if (!st.error && st.data) stats = st.data as Stats;
   }
 
   return (
@@ -39,6 +43,8 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
           <Link href="/submit" className="btn">Share your rate (anonymous, 60 seconds)</Link>
         </p>
       </section>
+
+      {stats && <Progress reports={stats.reports} live={stats.companies_live} />}
 
       <Filters values={values} />
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import { SITE_NAME, SITE_URL } from '@/lib/options';
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <nav aria-label="Footer">
               <Link href="/about">About</Link>
               <Link href="/calculator">Take-home calculator</Link>
+              <Link href="/guides">Guides</Link>
               <Link href="/privacy">Privacy</Link>
               <Link href="/terms">Terms</Link>
               <Link href="/contact">Complaints and removals</Link>
@@ -48,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <p>Rates are reported anonymously by drivers and are not verified. Pay estimates are not tax advice.</p>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );

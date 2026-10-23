@@ -138,3 +138,11 @@ th { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
 .admin-item { display: grid; gap: 8px; }
 .admin-item .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .flag { color: var(--bad); font-weight: 700; font-size: 0.85rem; }
+
+.progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.bar { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--line); }
+.bar span { display: block; height: 100%; background: var(--accent); min-width: 6px; }
+.share { margin-top: 14px; }
+.share-label { font-weight: 700; margin-bottom: 8px; }
+.guide h2 { font-size: 1.2rem; }
+.guide table { margin: 8px 0 16px; }

@@ -6,6 +6,8 @@ import { isConfigured } from '@/lib/supabase/env';
 import { JOB_TYPES, LICENCES, label, money, monthYear } from '@/lib/options';
 import { ShareBand, NotConfigured } from '../../components';
 import ReportButton from './report-button';
+import ShareButtons from '../../share-buttons';
+import { SITE_URL } from '@/lib/options';
 
 export const dynamic = 'force-dynamic';
 
@@ -125,6 +127,14 @@ export default async function CompanyPage({ params }: { params: Params }) {
           )}
         </>
       )}
+
+      <ShareButtons
+        url={`${SITE_URL}/company/${detail.slug}`}
+        label={s ? 'Know someone working for them?' : `Help get ${detail.name} on the board`}
+        text={s
+          ? `${detail.name} – real HGV pay reported by drivers (median ${money(s.median)}/hr). What are you on?`
+          : `Anyone driving for ${detail.name}? Add what they pay (anonymous) so we can all see a fair rate:`}
+      />
 
       <ShareBand />
       <p className="small muted" style={{ marginTop: 20 }}>

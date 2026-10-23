@@ -109,3 +109,19 @@ export function NotConfigured() {
     </div>
   );
 }
+
+// Founding-drivers goal: shows momentum while the site fills up.
+export function Progress({ reports, live }: { reports: number; live: number }) {
+  const goal = reports < 100 ? 100 : reports < 500 ? 500 : Math.ceil((reports + 1) / 1000) * 1000;
+  const pct = Math.min(100, Math.round((reports / goal) * 100));
+  return (
+    <div className="card progress" style={{ marginBottom: 14 }}>
+      <div className="progress-top">
+        <strong className="num">{reports.toLocaleString('en-GB')} {reports === 1 ? 'rate' : 'rates'} shared</strong>
+        <span className="small muted">Goal: {goal.toLocaleString('en-GB')} · {live} {live === 1 ? 'company' : 'companies'} live</span>
+      </div>
+      <div className="bar" role="progressbar" aria-valuenow={reports} aria-valuemin={0} aria-valuemax={goal}><span style={{ width: `${pct}%` }} /></div>
+      {reports < 100 && <p className="small muted" style={{ margin: '8px 0 0' }}>We&apos;re just getting started. Be one of the first 100 drivers and help everyone see a fair rate.</p>}
+    </div>
+  );
+}

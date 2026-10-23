@@ -4,6 +4,7 @@ import { useActionState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { submitRate, type FormState } from '../actions';
 import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES } from '@/lib/options';
+import ShareButtons from '../share-buttons';
 
 function Choices({ name, options, required = true }: { name: string; options: readonly { value: string; label: string }[]; required?: boolean }) {
   return (
@@ -18,7 +19,7 @@ function Choices({ name, options, required = true }: { name: string; options: re
   );
 }
 
-export default function SubmitForm({ companies }: { companies: { name: string }[] }) {
+export default function SubmitForm({ companies, siteUrl }: { companies: { name: string }[]; siteUrl: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitRate, {});
   const formRef = useRef<HTMLFormElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -37,6 +38,11 @@ export default function SubmitForm({ companies }: { companies: { name: string }[
         <div className="notice success" role="status" style={{ marginBottom: 16 }}>
           <strong>{state.message}</strong>{' '}
           <Link href="/">See the rates</Link> or add another below.
+          <ShareButtons
+            url={siteUrl}
+            label="Each company needs 3 drivers before its rates show. Send it to your mates:"
+            text="I've just put what my agency pays on RealRates – anonymous, takes a minute. Add yours so we can all see who pays fair:"
+          />
         </div>
       )}
       {state.error && <div className="notice error" role="alert" style={{ marginBottom: 16 }}>{state.error}</div>}
