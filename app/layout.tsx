@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
+import Tracker from './tracker';
 import { SITE_NAME, SITE_URL } from '@/lib/options';
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </footer>
         <Analytics />
+        <Tracker />
       </body>
     </html>
   );

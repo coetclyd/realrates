@@ -29,8 +29,8 @@ export default function Privacy() {
       <h2>Who we share it with</h2>
       <p>Supabase (database and login) and Vercel (website hosting), who process data on our behalf under data processing terms. We don&apos;t sell personal data or share it with employers or agencies.</p>
 
-      <h2>Cookies</h2>
-      <p>We only use essential cookies that keep you signed in. No advertising or tracking cookies.</p>
+      <h2>Cookies and visit counts</h2>
+      <p>We only use essential cookies that keep you signed in. No advertising or tracking cookies. We count visits anonymously (a daily total, with no IP address or identifier stored) and use Vercel Web Analytics, which is cookie-free, to see which pages are used.</p>
 
       <h2>How long we keep it</h2>
       <p>Account data is kept until you ask us to delete it. Rate figures may be kept in aggregate after an account is deleted, with no link to you. Complaint records are kept for up to 2 years.</p>
