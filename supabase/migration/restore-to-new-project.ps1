@@ -58,6 +58,8 @@ try {
       -f "$work\auth-users.sql" -f "$work\public.sql" -f "$bk\function-grants.sql" | Out-Null
   if ($LASTEXITCODE) { throw 'Restore failed and was rolled back - the new project is still empty. Send Claude the error above.' }
   Write-Host 'Restore committed.' -ForegroundColor Green
+  # The restore pauses event triggers, so tell the Data API to reload its list of tables/functions.
+  & $psql @conn -q -c "notify pgrst, 'reload schema'" | Out-Null
 
   # 6. Verify: same 17-line inventory as the live project
   & $psql @conn -At -f "$here\inventory.sql" -o "$bk\target-inventory.txt"
