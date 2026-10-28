@@ -21,6 +21,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-GB">
       <body>
+        {process.env.VERCEL_ENV === 'preview' && (
+          <div style={{ background: '#ffd60a', color: '#111316', textAlign: 'center', padding: '6px 12px', fontWeight: 700, fontSize: 14 }}>
+            PREVIEW ONLY · database: {(process.env.NEXT_PUBLIC_SUPABASE_URL || 'not set').replace('https://', '').replace('.supabase.co', '')}
+          </div>
+        )}
         <header className="site-header">
           <div className="wrap">
             <Link href="/" className="logo" aria-label={`${SITE_NAME} home`}>
