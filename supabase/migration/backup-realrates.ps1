@@ -26,7 +26,9 @@ $conn = @('--host', $poolerHost, '--port', '5432', '--username', $dbUser, '--dbn
 
 try {
   # Safety check: refuse to run against anything other than RealRates
-  $tables = (& $psql @conn -At -c "select string_agg(tablename, ',' order by tablename) from pg_tables where schemaname='public'").Trim()
+  $tables = & $psql @conn -At -c "select string_agg(tablename, ',' order by tablename) from pg_tables where schemaname='public'"
+  if ($LASTEXITCODE -or -not $tables) { throw "Could not log in (wrong password or host?). Nothing was backed up or changed. Don't retry more than twice - Supabase blocks repeated failed logins for a while." }
+  $tables = "$tables".Trim()
   if ($tables -notmatch 'rate_reports' -or $tables -notmatch 'companies') { throw "This doesn't look like the RealRates database (tables: $tables). Stopping." }
 
   $stamp = (Get-Date).ToUniversalTime().ToString('yyyyMMddTHHmmssZ')
