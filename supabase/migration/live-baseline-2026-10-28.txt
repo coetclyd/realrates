@@ -1,0 +1,18 @@
+Live RealRates (qetlynfcssdkmlhpwbug) inventory, run by Clyde in SQL Editor 2026-10-28 13:42 UTC
+01 public tables: 7 | bf6faed23c66200f44bdf661734bca2f
+02 public functions: 11 | 406a36bc08b3886d382778ffac086e56
+03 RLS policies: 18 | 4b7e29a5b069000143f0ec6a8391f74f
+04 triggers: 3 | c950abfe405517aec8d0625bb47d6c40
+05 constraints: 42 | c95d7e91f5493df0011533c5b9ea167c
+06 API grants: 147 | bb702cc13d3c29f364856cb5c887abb7
+07 tables without RLS: none
+08 anon merge access: false
+10 companies: 75 | 75 approved
+11 reports/comments: 0 | 0
+12 abuse/removal: 0 | 0
+13 admins/visits: 1 | 1
+14 company fingerprint: c8dbe59c854c962140a91e9f02486565
+15 admin fingerprint: 033246d4e8a9256b3d1db3f4c8c5aa90
+20 auth users: 2 | f00452d27ade00b098d7196d94dd32b9
+21 auth identities: 2 | 346c0b0085491d5a1f11ff101fff1160
+22 orphan admins: 0
