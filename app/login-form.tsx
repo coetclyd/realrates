@@ -1,38 +1,20 @@
 'use client';
 
 import { useActionState } from 'react';
-import { sendMagicLink, verifyCode, type FormState } from './actions';
-
-function CodeForm({ email, next, notice }: { email: string; next: string; notice?: string }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(verifyCode, {});
-  return (
-    <form action={action} className="card">
-      {notice && <p className="notice success" role="status">{notice}</p>}
-      <input type="hidden" name="email" value={email} />
-      <input type="hidden" name="next" value={next} />
-      <div className="field">
-        <label htmlFor="code">
-          Check your email
-          <span className="hint">Tap the link in the email <strong>in this same browser</strong>. If the email also shows a code, you can type it here instead.</span>
-        </label>
-        <input id="code" name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,9}" maxLength={9} required autoFocus
-          style={{ fontSize: '1.5rem', letterSpacing: '0.3em', textAlign: 'center' }} />
-      </div>
-      {state.error && <p className="notice error" role="alert">{state.error}</p>}
-      <button className="btn block" disabled={pending}>{pending ? 'Checking…' : 'Sign in with code'}</button>
-      <p className="small muted" style={{ marginTop: 10, marginBottom: 0 }}>
-        No email? Check spam, or <a href={`?next=${encodeURIComponent(next)}`}>start again</a>.
-      </p>
-    </form>
-  );
-}
+import { sendMagicLink, type FormState } from './actions';
 
 export default function LoginForm({ next = '/submit' }: { next?: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(sendMagicLink, {});
-  if (state.ok && state.email) return <CodeForm email={state.email} next={state.next ?? next} notice={state.message} />;
-  if (state.ok) return <div className="notice success" role="status">{state.message}</div>;
+  if (state.ok) return <div className="card" role="status"><h2>Check your email</h2><p>{state.message}</p><p>Tap the sign-in link in the newest email. Check spam if it hasn’t arrived.</p><a href={`/login?next=${encodeURIComponent(next)}`}>Try another email</a></div>;
   return (
-    <form action={action} className="card">
+    <div className="card">
+      <div style={{ display: 'grid', gap: 10, marginBottom: 20 }}>
+        <a className="btn block" href={`/auth/provider/google?next=${encodeURIComponent(next)}`}>Continue with Google</a>
+        <a className="btn block" href={`/auth/provider/azure?next=${encodeURIComponent(next)}`}>Continue with Microsoft</a>
+        <a className="btn block" href={`/auth/provider/facebook?next=${encodeURIComponent(next)}`}>Continue with Facebook</a>
+      </div>
+      <p className="small muted" style={{ textAlign: 'center' }}>Or sign in with email</p>
+    <form action={action}>
       <input type="hidden" name="next" value={next} />
       <input className="hp" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className="field">
@@ -45,5 +27,6 @@ export default function LoginForm({ next = '/submit' }: { next?: string }) {
       {state.error && <p className="notice error" role="alert">{state.error}</p>}
       <button className="btn block" disabled={pending}>{pending ? 'Sending…' : 'Email me a sign-in link'}</button>
     </form>
+    </div>
   );
 }
