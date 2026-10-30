@@ -14,7 +14,8 @@ export default function Privacy() {
 
       <h2>What we collect</h2>
       <ul>
-        <li><strong>Your email address</strong>, only if you sign in to share a rate. We use it to send login links and to stop spam.</li>
+        <li><strong>Account details</strong>, including your email address when provided. We use it for sign-in, account management and abuse prevention.</li>
+        <li><strong>Social sign-in information</strong>, when you choose Google, Microsoft or Facebook: your provider account identifier and any name, email address or profile picture shared with us. This information is used for authentication and is not displayed with public rate reports.</li>
         <li><strong>The rates and comments you submit.</strong> These are stored against your account so you can manage them and so we can apply daily limits, but they are never shown with your email or any identifier.</li>
         <li><strong>Complaint and removal requests</strong>, including your name, email and message.</li>
         <li><strong>Technical data</strong> such as IP address and browser type, processed by our hosting and database providers for security and to keep the site running.</li>
@@ -27,7 +28,7 @@ export default function Privacy() {
       <p>Legitimate interests: running a pay comparison service for drivers, preventing spam and abuse, and handling complaints.</p>
 
       <h2>Who we share it with</h2>
-      <p>Supabase (database and login) and Vercel (website hosting), who process data on our behalf under data processing terms. We don&apos;t sell personal data or share it with employers or agencies.</p>
+      <p>Supabase (database and login), Vercel (website hosting), and your chosen sign-in provider (Google, Microsoft or Facebook) when you use social sign-in, who process data on our behalf under data processing terms. We don&apos;t sell personal data or share it with employers or agencies.</p>
 
       <h2>Cookies and visit counts</h2>
       <p>We only use essential cookies that keep you signed in. No advertising or tracking cookies. We count visits anonymously (a daily total, with no IP address or identifier stored) and use Vercel Web Analytics, which is cookie-free, to see which pages are used.</p>
