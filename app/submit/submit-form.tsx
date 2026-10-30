@@ -3,7 +3,7 @@
 import { useActionState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { submitRate, type FormState } from '../actions';
-import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES } from '@/lib/options';
+import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES, SITE_NAME } from '@/lib/options';
 import ShareButtons from '../share-buttons';
 
 function Choices({ name, options, required = true }: { name: string; options: readonly { value: string; label: string }[]; required?: boolean }) {
@@ -41,7 +41,7 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
           <ShareButtons
             url={siteUrl}
             label="Each company needs 3 drivers before its rates show. Send it to your mates:"
-            text="I've just put what my agency pays on RealRates – anonymous, takes a minute. Add yours so we can all see who pays fair:"
+            text={`I've just put what my agency pays on ${SITE_NAME} – anonymous, takes a minute. Add yours so we can all see who pays fair:`}
           />
         </div>
       )}
