@@ -49,7 +49,7 @@ export default async function StatsPage() {
       {sources && (
         <>
           <h2>Visits from tagged links</h2>
-          <p className="small muted">Counts visits that arrived via a link with ?utm_source= (poster QR, Facebook, school emails...). These are visits, not rate submissions.</p>
+          <p className="small muted">Counts visits that arrived via a link with ?utm_source= (poster QR, Facebook, school emails...). These are visits (one per browser session), not unique people and not rate submissions. Directional only: the counter is not tamper-proof.</p>
           {sources.length === 0 ? <p className="muted">No tagged visits yet (links with ?utm_source=…).</p> : (
             <div className="card table-wrap" style={{ padding: 0 }}>
               <table>
