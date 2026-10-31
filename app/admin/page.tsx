@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { isConfigured } from '@/lib/supabase/env';
 import LoginForm from '../login-form';
+import { enabledSocialProviders } from '@/lib/auth-providers';
 import { NotConfigured } from '../components';
 import {
   setCommentStatus, approveCompany, deleteCompany, mergeCompanies, resolveAbuse, resolveRemoval,
@@ -18,7 +19,7 @@ export default async function AdminPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
-    return (<div style={{ maxWidth: 480 }}><h1>Admin</h1><LoginForm next="/admin" /></div>);
+    return (<div style={{ maxWidth: 480 }}><h1>Admin</h1><LoginForm next="/admin" providers={enabledSocialProviders()} /></div>);
   }
   const { data: isAdmin } = await supabase.rpc('is_admin');
   // Non-admins never see this page: send them to the normal rate form.
