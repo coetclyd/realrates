@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 // Counts one "visit" per browser tab session, and one "submit_view" per session when the rate form is opened.
-// The first visit also passes the campaign label from ?utm_source= (e.g. poster), counted per day, no personal data.
+// A tagged link (?utm_source=poster etc.) is also counted once per source per session: a daily count, no personal data.
 // Uses sessionStorage only (no cookies, nothing personal).
 export default function Tracker() {
   const path = usePathname();
@@ -20,10 +20,12 @@ export default function Tracker() {
       else fetch('/api/track', { method: 'POST', body, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(() => {});
     };
     if (path?.startsWith('/admin') || path?.startsWith('/auth')) return;
-    let source = '';
-    try { source = (new URLSearchParams(window.location.search).get('utm_source') ?? '').slice(0, 32); } catch { /* none */ }
-    send('visit', source ? { source } : {});
+    send('visit');
     if (path === '/submit') send('submit_view');
+    // Each tagged link (?utm_source=) counts once per tab session, even if the session started untagged.
+    let source = '';
+    try { source = (new URLSearchParams(window.location.search).get('utm_source') ?? '').trim().toLowerCase().slice(0, 32); } catch { /* none */ }
+    if (source) send(`src_${source}`, { source });
   }, [path]);
   return null;
 }

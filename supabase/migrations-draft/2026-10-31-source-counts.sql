@@ -8,7 +8,18 @@
 
 begin;
 
-create table if not exists public.daily_source_visits (
+-- Collision guard: stop if any of these objects already exist, so this file (and its rollback) can never
+-- touch something it did not create.
+do $$
+begin
+  if to_regclass('public.daily_source_visits') is not null
+     or to_regprocedure('public.track_source(text)') is not null
+     or to_regprocedure('public.source_stats()') is not null then
+    raise exception 'source-counts objects already exist; stop and review before re-running';
+  end if;
+end $$;
+
+create table public.daily_source_visits (
   day date not null,
   source text not null check (source in
     ('poster','facebook','reddit','school','tiktok','x','bluesky','youtube','whatsapp','email','other')),

@@ -48,11 +48,12 @@ export default async function StatsPage() {
       </div>
       {sources && (
         <>
-          <h2>Where visits came from</h2>
+          <h2>Visits from tagged links</h2>
+          <p className="small muted">Counts visits that arrived via a link with ?utm_source= (poster QR, Facebook, school emails...). These are visits, not rate submissions.</p>
           {sources.length === 0 ? <p className="muted">No tagged visits yet (links with ?utm_source=…).</p> : (
             <div className="card table-wrap" style={{ padding: 0 }}>
               <table>
-                <thead><tr><th>Source</th><th className="num">Last 7 days</th><th className="num">All time</th></tr></thead>
+                <thead><tr><th>Link source</th><th className="num">Last 7 days</th><th className="num">All time</th></tr></thead>
                 <tbody>{sources.map((r) => <tr key={r.source}><td>{r.source}</td><td className="num">{r.last_7d}</td><td className="num"><strong>{r.total}</strong></td></tr>)}</tbody>
               </table>
             </div>
