@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { isConfigured } from '@/lib/supabase/env';
 import LoginForm from '../login-form';
+import { enabledSocialProviders } from '@/lib/auth-providers';
 import SubmitForm from './submit-form';
 import { NotConfigured } from '../components';
 import { SITE_URL } from '@/lib/options';
@@ -24,7 +25,7 @@ export default async function SubmitPage() {
         <p className="muted">
           Anonymous and takes about 60 seconds. First, confirm your email so we can stop spam. Nobody else ever sees it.
         </p>
-        <LoginForm next="/submit" />
+        <LoginForm next="/submit" providers={enabledSocialProviders()} />
       </div>
     );
   }
