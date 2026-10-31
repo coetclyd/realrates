@@ -13,10 +13,14 @@ type Stats = {
 // Public, numbers-only progress page (totals, nothing identifying). Used by the weekly report.
 export default async function StatsPage() {
   let s: Stats | null = null;
+  let sources: { source: string; last_7d: number; total: number }[] | null = null;
   if (isConfigured()) {
     const supabase = await createClient();
     const { data, error } = await supabase.rpc('site_stats');
     if (!error) s = data as Stats;
+    // Optional: only present once the source-counts migration has been applied.
+    const src = await supabase.rpc('source_stats');
+    if (!src.error && Array.isArray(src.data)) sources = src.data;
   }
   if (!s || s.visits_7d === undefined) {
     return <div className="prose"><h1>Site stats</h1><p className="notice error">Stats not set up yet: run supabase/launch-setup.sql.</p></div>;
@@ -42,6 +46,19 @@ export default async function StatsPage() {
       <div className="card table-wrap" style={{ padding: 0 }}>
         <table><tbody>{rows.map(([k, v]) => <tr key={k}><td>{k}</td><td className="num"><strong>{v}</strong></td></tr>)}</tbody></table>
       </div>
+      {sources && (
+        <>
+          <h2>Where visits came from</h2>
+          {sources.length === 0 ? <p className="muted">No tagged visits yet (links with ?utm_source=…).</p> : (
+            <div className="card table-wrap" style={{ padding: 0 }}>
+              <table>
+                <thead><tr><th>Source</th><th className="num">Last 7 days</th><th className="num">All time</th></tr></thead>
+                <tbody>{sources.map((r) => <tr key={r.source}><td>{r.source}</td><td className="num">{r.last_7d}</td><td className="num"><strong>{r.total}</strong></td></tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
       <p className="small muted">Visits = one per browser session, bots excluded, no personal data stored. Generated {new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })} UK time.</p>
     </div>
   );

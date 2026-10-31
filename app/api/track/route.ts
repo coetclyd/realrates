@@ -14,11 +14,16 @@ export async function POST(request: NextRequest) {
   try { if (!from || new URL(from).host !== host) return new NextResponse(null, { status: 204 }); }
   catch { return new NextResponse(null, { status: 204 }); }
   let kind = 'visit';
+  let source = '';
   try {
     const body = await request.json();
     if (body?.kind === 'submit_view') kind = 'submit_view';
+    if (kind === 'visit' && typeof body?.source === 'string') source = body.source.trim().slice(0, 32);
   } catch { /* default visit */ }
   const supabase = createClient(supabaseUrl(), supabaseKey(), { auth: { persistSession: false } });
   await supabase.rpc('track', { p_kind: kind });
+  // Campaign source (poster, facebook, school ...). The database maps unknown labels to 'other'.
+  // Harmless before the source-counts migration is applied: the call just fails and is ignored.
+  if (source) await supabase.rpc('track_source', { p_source: source }).then(() => undefined, () => undefined);
   return new NextResponse(null, { status: 204 });
 }
