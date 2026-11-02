@@ -21,16 +21,14 @@ export default async function SubmitPage() {
   if (!user) {
     return (
       <div style={{ maxWidth: 560 }}>
-        <h1>What does your job actually pay?</h1>
-        <p>ShiftRates is a free UK platform helping workers share and compare real pay rates.</p>
-        <p>See what people are actually earning, not just what jobs advertise.</p>
+        <h1>Share your rate</h1>
+        <p className="muted">What does your job actually pay? ShiftRates helps UK workers compare real pay, starting with HGV jobs.</p>
         <ul>
-          <li><strong>Share your rate:</strong> anonymously report what you&apos;re paid.</li>
-          <li><strong>Compare pay:</strong> explore rates as more workers contribute.</li>
-          <li><strong>Calculate take-home pay:</strong> estimate what you&apos;ll take home after deductions using our <a href="/calculator">free calculator</a>.</li>
+          <li><strong>Share:</strong> report your HGV rate anonymously in about 60 seconds.</li>
+          <li><strong>Compare:</strong> see pay rates as more drivers contribute.</li>
+          <li><strong>Calculate:</strong> use our <a href="/calculator">free take-home pay calculator</a>.</li>
         </ul>
-        <p className="muted">We&apos;re starting with HGV driving jobs and plan to expand to other types of work. HGV drivers can share a rate in about 60 seconds.</p>
-        <p className="muted">Sign in with Google or confirm your email to help us prevent spam. Your email is never displayed alongside your pay report.</p>
+        <p className="small muted">Sign in to prevent spam. Your email is never displayed with your report.</p>
         <LoginForm next="/submit" providers={enabledSocialProviders()} />
       </div>
     );
