@@ -10,7 +10,7 @@ import { SITE_URL } from '@/lib/options';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Share your rate',
-  description: 'Anonymously share what an HGV agency or haulier pays, in 60 seconds.',
+  description: 'Learn about ShiftRates and anonymously share your HGV pay rate in about 60 seconds.',
 };
 
 export default async function SubmitPage() {
@@ -22,9 +22,13 @@ export default async function SubmitPage() {
     return (
       <div style={{ maxWidth: 560 }}>
         <h1>Share your rate</h1>
-        <p className="muted">
-          Anonymous and takes about 60 seconds. First, confirm your email so we can stop spam. Nobody else ever sees it.
-        </p>
+        <p className="muted">What does your job actually pay? ShiftRates helps UK workers compare real pay, starting with HGV jobs.</p>
+        <ul>
+          <li><strong>Share:</strong> report your HGV rate anonymously in about 60 seconds.</li>
+          <li><strong>Compare:</strong> see pay rates as more drivers contribute.</li>
+          <li><strong>Calculate:</strong> use our <a href="/calculator">free take-home pay calculator</a>.</li>
+        </ul>
+        <p className="small muted">Sign in to prevent spam. Your email is never displayed with your report.</p>
         <LoginForm next="/submit" providers={enabledSocialProviders()} />
       </div>
     );

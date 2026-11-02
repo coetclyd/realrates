@@ -36,9 +36,11 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
       <section className="hero">
         <h1>What does that job actually pay?</h1>
         <p>
-          Real hourly rates reported anonymously by HGV drivers. Compare agencies and hauliers for the same
-          work in your area before you take the shift.
+          ShiftRates is a free UK platform helping workers share and compare real pay rates.
+          We&apos;re starting with HGV driving jobs, with more types of work planned as the platform grows.
         </p>
+        <p>See what people are actually earning, not just what jobs advertise. Share your rate anonymously,
+          explore pay comparisons as reports come in, or use our <Link href="/calculator">take-home pay calculator</Link>.</p>
         <p style={{ marginTop: -4 }}>
           <Link href="/submit" className="btn">Share your rate (anonymous, 60 seconds)</Link>
         </p>
