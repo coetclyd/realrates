@@ -1,17 +1,17 @@
 'use client';
 
-import { useActionState, useRef, useEffect } from 'react';
+import { useActionState, useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { submitRate, type FormState } from '../actions';
-import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES, SITE_NAME } from '@/lib/options';
+import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES, SITE_NAME, WORK_TYPES } from '@/lib/options';
 import ShareButtons from '../share-buttons';
 
-function Choices({ name, options, required = true }: { name: string; options: readonly { value: string; label: string }[]; required?: boolean }) {
+function Choices({ name, options, required = true, onPick }: { name: string; options: readonly { value: string; label: string }[]; required?: boolean; onPick?: (v: string) => void }) {
   return (
     <div className="choice-row" role="radiogroup">
       {options.map((o, i) => (
         <label key={o.value}>
-          <input type="radio" name={name} value={o.value} required={required && i === 0} />
+          <input type="radio" name={name} value={o.value} required={required && i === 0} onChange={onPick ? () => onPick(o.value) : undefined} />
           <span>{o.label}</span>
         </label>
       ))}
@@ -22,12 +22,15 @@ function Choices({ name, options, required = true }: { name: string; options: re
 export default function SubmitForm({ companies, siteUrl }: { companies: { name: string }[]; siteUrl: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitRate, {});
   const formRef = useRef<HTMLFormElement>(null);
+  const [work, setWork] = useState('');
+  const isHgv = work === 'hgv';
+  const shifts = isHgv ? SHIFTS : SHIFTS.filter((s) => s.value !== 'tramping');
   const topRef = useRef<HTMLDivElement>(null);
   const now = new Date();
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
   useEffect(() => {
-    if (state.ok) formRef.current?.reset();
+    if (state.ok) { formRef.current?.reset(); setWork(''); }
     if (state.ok || state.error) topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [state]);
 
@@ -40,8 +43,8 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
           <Link href="/">See the rates</Link> or add another below.
           <ShareButtons
             url={siteUrl}
-            label="Each company needs 3 drivers before its rates show. Send it to your mates:"
-            text={`I've just put what my agency pays on ${SITE_NAME} – anonymous, takes a minute. Add yours so we can all see who pays fair:`}
+            label="Each company needs 3 reports for the same kind of work before its rates show. Send it to your mates:"
+            text={`I've just put what my job pays on ${SITE_NAME} – anonymous, takes a minute. Add yours so we can all see who pays fair:`}
           />
         </div>
       )}
@@ -49,7 +52,11 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
 
       <form ref={formRef} action={action} className="card">
         <div className="field">
-          <label htmlFor="company_name">Agency or haulier name</label>
+          <label>What kind of work?</label>
+          <Choices name="work_type" options={WORK_TYPES} onPick={setWork} />
+        </div>
+        <div className="field">
+          <label htmlFor="company_name">Agency or employer name</label>
           <input id="company_name" name="company_name" list="company-list" autoComplete="off" required maxLength={80} placeholder="Start typing…" />
           <datalist id="company-list">
             {companies.map((c) => <option key={c.name} value={c.name} />)}
@@ -57,8 +64,8 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
           <span className="hint">Pick from the list if it&apos;s there. New names are checked before they go live.</span>
         </div>
         <div className="field">
-          <label>Is it an agency or a haulier?</label>
-          <Choices name="kind" options={[{ value: 'agency', label: 'Agency' }, { value: 'haulier', label: 'Direct haulier' }]} />
+          <label>Is it an agency or your direct employer?</label>
+          <Choices name="kind" options={[{ value: 'agency', label: 'Agency' }, { value: 'direct', label: isHgv ? 'Direct haulier' : 'Direct employer' }]} />
         </div>
 
         <div className="grid2">
@@ -70,7 +77,7 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
             </select>
           </div>
           <div className="field">
-            <label htmlFor="site_town">Site town <span className="hint">e.g. Hull, Goole (optional)</span></label>
+            <label htmlFor="site_town">Site town <span className="hint">e.g. Hull, Leeds (optional)</span></label>
             <input id="site_town" name="site_town" maxLength={60} />
           </div>
           <div className="field">
@@ -83,17 +90,21 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
           </div>
         </div>
 
-        <div className="field">
-          <label>Licence</label>
-          <Choices name="licence" options={LICENCES} />
-        </div>
-        <div className="field">
-          <label>Job type</label>
-          <Choices name="job_type" options={JOB_TYPES} />
-        </div>
+        {isHgv && (
+          <>
+            <div className="field">
+              <label>Licence</label>
+              <Choices name="licence" options={LICENCES} />
+            </div>
+            <div className="field">
+              <label>Job type</label>
+              <Choices name="job_type" options={JOB_TYPES} />
+            </div>
+          </>
+        )}
         <div className="field">
           <label>Shift</label>
-          <Choices name="shift" options={SHIFTS} />
+          <Choices key={isHgv ? 'hgv' : 'other'} name="shift" options={shifts} />
         </div>
 
         <div className="grid2">
@@ -105,10 +116,12 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
             <label htmlFor="overtime_rate">Overtime rate (£) <span className="hint">Optional</span></label>
             <input id="overtime_rate" name="overtime_rate" type="number" inputMode="decimal" step="0.01" min="10" max="90" />
           </div>
-          <div className="field">
-            <label htmlFor="night_out">Night-out allowance (£) <span className="hint">Optional, per night</span></label>
-            <input id="night_out" name="night_out" type="number" inputMode="decimal" step="0.01" min="0" max="100" />
-          </div>
+          {isHgv && (
+            <div className="field">
+              <label htmlFor="night_out">Night-out allowance (£) <span className="hint">Optional, per night</span></label>
+              <input id="night_out" name="night_out" type="number" inputMode="decimal" step="0.01" min="0" max="100" />
+            </div>
+          )}
           <div className="field">
             <label htmlFor="worked_month">Month worked</label>
             <input id="worked_month" name="worked_month" type="month" max={thisMonth} defaultValue={thisMonth} required />
@@ -137,7 +150,7 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
 
         <button className="btn block" disabled={pending}>{pending ? 'Saving…' : 'Share my rate anonymously'}</button>
         <p className="small muted" style={{ marginTop: 10 }}>
-          Your email is never shown. Figures only appear once 3 drivers have reported for a company. See our <Link href="/privacy">privacy policy</Link>.
+          Your email is never shown. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
         </p>
       </form>
     </>

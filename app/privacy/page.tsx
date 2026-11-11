@@ -25,7 +25,7 @@ export default function Privacy() {
       <p>Only aggregate figures (median and range) for companies with at least 3 reports, and comments we have checked. We never publish your email, and we record the month you worked rather than exact dates.</p>
 
       <h2>Why we use it (lawful basis)</h2>
-      <p>Legitimate interests: running a pay comparison service for drivers, preventing spam and abuse, and handling complaints.</p>
+      <p>Legitimate interests: running a pay comparison service for workers, preventing spam and abuse, and handling complaints.</p>
 
       <h2>Who we share it with</h2>
       <p>Supabase (database and login), Vercel (website hosting), and your chosen sign-in provider (Google, Microsoft or Facebook) when you use social sign-in, who process data on our behalf under data processing terms. We don&apos;t sell personal data or share it with employers or agencies.</p>

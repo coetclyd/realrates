@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { SITE_NAME } from '@/lib/options';
 
-export const alt = 'What does that job actually pay? Real HGV driver pay rates.';
+export const alt = 'What does that job actually pay? Real pay for UK shift workers.';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -18,7 +18,7 @@ export default function OgImage() {
           What does that job actually pay?
         </div>
         <div style={{ display: 'flex', marginTop: 28, fontSize: 36, color: '#a7acb4' }}>
-          Real hourly rates from UK HGV drivers. Anonymous. Free.
+          Real hourly rates from UK shift workers. Anonymous. Free.
         </div>
         <div style={{ display: 'flex', marginTop: 'auto', gap: 20 }}>
           {Array.from({ length: 16 }).map((_, i) => (

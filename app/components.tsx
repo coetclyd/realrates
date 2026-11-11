@@ -1,17 +1,18 @@
 import Link from 'next/link';
-import { LICENCES, JOB_TYPES, SHIFTS, REGIONS, money, monthYear } from '@/lib/options';
+import { LICENCES, JOB_TYPES, SHIFTS, REGIONS, WORK_TYPES, money, monthYear, workLabel, kindLabel } from '@/lib/options';
 
 export type SearchRow = {
   company_id: string;
   name: string;
   slug: string;
-  kind: 'agency' | 'haulier';
+  kind: 'agency' | 'haulier' | 'employer';
   areas: string | null;
   reports: number;
   median_rate: number;
   min_rate: number;
   max_rate: number;
   last_report: string;
+  work_type?: string; // missing only before the work-types migration
 };
 
 export function Filters({ values, action = '/' }: { values: Record<string, string | undefined>; action?: string }) {
@@ -27,14 +28,21 @@ export function Filters({ values, action = '/' }: { values: Record<string, strin
         </div>
       )}
       <div>
-        <label htmlFor="f-licence">Licence</label>
+        <label htmlFor="f-work">Work</label>
+        <select id="f-work" name="work" defaultValue={values.work ?? ''}>
+          <option value="">All shift work</option>
+          {WORK_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </div>
+      <div>
+        <label htmlFor="f-licence">Licence (HGV)</label>
         <select id="f-licence" name="licence" defaultValue={values.licence ?? ''}>
           <option value="">Any</option>
           {LICENCES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
       <div>
-        <label htmlFor="f-job">Job type</label>
+        <label htmlFor="f-job">Job type (HGV)</label>
         <select id="f-job" name="job" defaultValue={values.job ?? ''}>
           <option value="">Any</option>
           {JOB_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -60,7 +68,7 @@ export function Results({ rows }: { rows: SearchRow[] }) {
       <div className="notice">
         <strong>No companies to show for that search yet.</strong>
         <p className="small muted" style={{ margin: '4px 0 0' }}>
-          A company only appears once at least 3 drivers have reported a rate, so no one can be identified.{' '}
+          A company only appears once at least 3 people have reported the same kind of work there, so no one can be identified.{' '}
           <Link href="/submit">Add yours</Link> to get it started.
         </p>
       </div>
@@ -69,12 +77,13 @@ export function Results({ rows }: { rows: SearchRow[] }) {
   return (
     <div className="stack">
       {rows.map((r) => (
-        <Link key={r.company_id} href={`/company/${r.slug}`} className="card result">
+        <Link key={`${r.company_id}-${r.work_type ?? 'hgv'}`} href={`/company/${r.slug}`} className="card result">
           <div>
             <div className="name">{r.name}</div>
             <div className="small muted">{r.areas}</div>
             <div style={{ marginTop: 6 }}>
-              <span className="tag">{r.kind === 'agency' ? 'Agency' : 'Haulier'}</span>
+              <span className="tag">{workLabel(r.work_type ?? 'hgv')}</span>
+              <span className="tag">{kindLabel(r.kind)}</span>
               <span className="tag">{r.reports} reports</span>
               <span className="tag">Latest {monthYear(r.last_report)}</span>
             </div>
@@ -92,8 +101,8 @@ export function Results({ rows }: { rows: SearchRow[] }) {
 export function ShareBand() {
   return (
     <section className="cta-band">
-      <h2>Know what your agency pays?</h2>
-      <p>Takes 60 seconds, fully anonymous. Every rate helps the next driver avoid a bad deal.</p>
+      <h2>Know what your job really pays?</h2>
+      <p>Takes 60 seconds, fully anonymous. Every rate helps the next worker avoid a bad deal.</p>
       <Link href="/submit" className="btn">Share your rate</Link>
     </section>
   );
@@ -110,7 +119,7 @@ export function NotConfigured() {
   );
 }
 
-// Founding-drivers goal: shows momentum while the site fills up.
+// Founding-reporters goal: shows momentum while the site fills up.
 export function Progress({ reports, live }: { reports: number; live: number }) {
   const goal = reports < 100 ? 100 : reports < 500 ? 500 : Math.ceil((reports + 1) / 1000) * 1000;
   const pct = Math.min(100, Math.round((reports / goal) * 100));
@@ -121,7 +130,7 @@ export function Progress({ reports, live }: { reports: number; live: number }) {
         <span className="small muted">Goal: {goal.toLocaleString('en-GB')} · {live} {live === 1 ? 'company' : 'companies'} live</span>
       </div>
       <div className="bar" role="progressbar" aria-valuenow={reports} aria-valuemin={0} aria-valuemax={goal}><span style={{ width: `${pct}%` }} /></div>
-      {reports < 100 && <p className="small muted" style={{ margin: '8px 0 0' }}>We&apos;re just getting started. Be one of the first 100 drivers and help everyone see a fair rate.</p>}
+      {reports < 100 && <p className="small muted" style={{ margin: '8px 0 0' }}>We&apos;re just getting started. Be one of the first 100 to share and help every shift worker see a fair rate.</p>}
     </div>
   );
 }

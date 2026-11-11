@@ -7,9 +7,9 @@ import { SITE_NAME, SITE_URL } from '@/lib/options';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: `${SITE_NAME} – real HGV driver pay rates`, template: `%s | ${SITE_NAME}` },
+  title: { default: `${SITE_NAME} – real pay for UK shift workers`, template: `%s | ${SITE_NAME}` },
   description:
-    'What do HGV agencies and hauliers actually pay? Real, anonymous pay rates reported by UK lorry drivers, plus a take-home pay calculator.',
+    'What do agencies and employers actually pay? Real, anonymous pay rates shared by UK shift workers – drivers, warehouse, factory, care, security and more – plus a take-home pay calculator.',
   openGraph: { siteName: SITE_NAME, type: 'website' },
 };
 
@@ -48,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/terms">Terms</Link>
               <Link href="/contact">Complaints and removals</Link>
             </nav>
-            <p>Rates are reported anonymously by drivers and are not verified. Pay estimates are not tax advice.</p>
+            <p>Rates are reported anonymously by workers and are not verified. Pay estimates are not tax advice.</p>
           </div>
         </footer>
         <Analytics />

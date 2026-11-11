@@ -19,6 +19,26 @@ export const REGIONS = [
   { slug: 'northern-ireland', name: 'Northern Ireland', seo: 'Northern Ireland' },
 ] as const;
 
+// What kind of shift work a report is for. HGV has extra details (licence, job type, tramping, night-outs).
+export const WORK_TYPES = [
+  { value: 'hgv', label: 'HGV driver' },
+  { value: 'van', label: 'Van / courier driver' },
+  { value: 'forklift', label: 'Forklift / FLT' },
+  { value: 'warehouse', label: 'Warehouse' },
+  { value: 'factory', label: 'Factory / production' },
+  { value: 'care', label: 'Care' },
+  { value: 'security', label: 'Security' },
+  { value: 'cleaning', label: 'Cleaning' },
+  { value: 'hospitality', label: 'Hospitality' },
+  { value: 'retail', label: 'Retail' },
+  { value: 'other', label: 'Other shift work' },
+] as const;
+
+export const workLabel = (v: string | null | undefined) =>
+  WORK_TYPES.find((w) => w.value === v)?.label ?? 'Shift work';
+
+export const kindLabel = (k: string) => (k === 'agency' ? 'Agency' : k === 'haulier' ? 'Haulier' : 'Direct employer');
+
 export const LICENCES = [
   { value: 'C1', label: 'C1 (7.5t)' },
   { value: 'C', label: 'Class 2 / Cat C' },
@@ -39,7 +59,7 @@ export const SHIFTS = [
   { value: 'day', label: 'Days' },
   { value: 'night', label: 'Nights' },
   { value: 'weekend', label: 'Weekends' },
-  { value: 'tramping', label: 'Tramping' },
+  { value: 'tramping', label: 'Tramping (HGV)' },
 ] as const;
 
 export const PAY_ROUTES = [

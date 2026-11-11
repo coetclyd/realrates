@@ -47,7 +47,7 @@ export default function Calculator() {
             <input id="c-oth" type="number" inputMode="decimal" step="0.5" value={f.overtimeHours} onChange={set('overtimeHours')} /></div>
           <div className="field"><label htmlFor="c-otr">Overtime rate £/hr</label>
             <input id="c-otr" type="number" inputMode="decimal" step="0.01" value={f.overtimeRate} onChange={set('overtimeRate')} /></div>
-          <div className="field"><label htmlFor="c-nights">Nights out per week</label>
+          <div className="field"><label htmlFor="c-nights">Nights out per week <span className="hint">Drivers only, leave blank otherwise</span></label>
             <input id="c-nights" type="number" inputMode="numeric" step="1" min="0" max="7" value={f.nightsOut} onChange={set('nightsOut')} /></div>
           <div className="field"><label htmlFor="c-nor">Night-out allowance £ per night</label>
             <input id="c-nor" type="number" inputMode="decimal" step="0.01" value={f.nightOutRate} onChange={set('nightOutRate')} /></div>
@@ -101,7 +101,7 @@ export default function Calculator() {
 
       <section className="cta-band">
         <h2>Know what your agency pays?</h2>
-        <p>Share it anonymously so other drivers can compare.</p>
+        <p>Share it anonymously so other workers can compare.</p>
         <Link href="/submit" className="btn">Share your rate</Link>
       </section>
     </>

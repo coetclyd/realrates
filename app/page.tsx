@@ -11,7 +11,7 @@ type Stats = { reports: number; companies_live: number; regions: number };
 
 export default async function Home({ searchParams }: { searchParams: SP }) {
   const sp = await searchParams;
-  const values = { region: pick(sp.region), licence: pick(sp.licence), job: pick(sp.job), shift: pick(sp.shift) };
+  const values = { region: pick(sp.region), work: pick(sp.work), licence: pick(sp.licence), job: pick(sp.job), shift: pick(sp.shift) };
 
   let rows: SearchRow[] = [];
   let failed = false;
@@ -24,6 +24,8 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
       p_job_type: values.job ?? null,
       p_shift: values.shift ?? null,
       p_postcode: null,
+      // Only sent when chosen, so this page also works before the work-types migration is applied.
+      ...(values.work ? { p_work_type: values.work } : {}),
     });
     if (error) failed = true;
     rows = (data as SearchRow[]) ?? [];
@@ -36,11 +38,12 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
       <section className="hero">
         <h1>What does that job actually pay?</h1>
         <p>
-          ShiftRates is a free UK platform helping workers share and compare real pay rates.
-          We&apos;re starting with HGV driving jobs, with more types of work planned as the platform grows.
+          ShiftRates is a free UK site where shift workers anonymously share and compare real pay:
+          drivers, warehouse, factory, care, security, cleaning, hospitality, retail and more.
+          It&apos;s early days, so every rate shared counts.
         </p>
         <p>See what people are actually earning, not just what jobs advertise. Share your rate anonymously,
-          explore pay comparisons as reports come in, or use our <Link href="/calculator">take-home pay calculator</Link>.</p>
+          compare employers and agencies as reports come in, or use our <Link href="/calculator">take-home pay calculator</Link>.</p>
         <p style={{ marginTop: -4 }}>
           <Link href="/submit" className="btn">Share your rate (anonymous, 60 seconds)</Link>
         </p>
