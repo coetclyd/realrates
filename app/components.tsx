@@ -34,20 +34,24 @@ export function Filters({ values, action = '/' }: { values: Record<string, strin
           {WORK_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
-      <div>
-        <label htmlFor="f-licence">Licence (HGV)</label>
-        <select id="f-licence" name="licence" defaultValue={values.licence ?? ''}>
-          <option value="">Any</option>
-          {LICENCES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="f-job">Job type (HGV)</label>
-        <select id="f-job" name="job" defaultValue={values.job ?? ''}>
-          <option value="">Any</option>
-          {JOB_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
-      </div>
+      {values.work === 'hgv' && (
+        <>
+        <div>
+          <label htmlFor="f-licence">Licence</label>
+          <select id="f-licence" name="licence" defaultValue={values.licence ?? ''}>
+            <option value="">Any</option>
+            {LICENCES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="f-job">Job type</label>
+          <select id="f-job" name="job" defaultValue={values.job ?? ''}>
+            <option value="">Any</option>
+            {JOB_TYPES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+        </div>
+        </>
+      )}
       <div>
         <label htmlFor="f-shift">Shift</label>
         <select id="f-shift" name="shift" defaultValue={values.shift ?? ''}>

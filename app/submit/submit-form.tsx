@@ -65,7 +65,7 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
         </div>
         <div className="field">
           <label>Is it an agency or your direct employer?</label>
-          <Choices name="kind" options={[{ value: 'agency', label: 'Agency' }, { value: 'direct', label: isHgv ? 'Direct haulier' : 'Direct employer' }]} />
+          <Choices name="kind" options={[{ value: 'agency', label: 'Agency' }, { value: 'direct', label: 'Direct employer' }]} />
         </div>
 
         <div className="grid2">

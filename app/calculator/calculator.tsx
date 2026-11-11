@@ -10,18 +10,19 @@ const n = (v: string) => (v === '' ? 0 : Math.max(0, Number(v) || 0));
 
 export default function Calculator() {
   const [f, setF] = useState({
-    hourlyRate: '18.50', hoursPerWeek: '45', overtimeHours: '', overtimeRate: '',
+    hourlyRate: '13.00', hoursPerWeek: '40', overtimeHours: '', overtimeRate: '',
     nightsOut: '', nightOutRate: String(NIGHT_OUT.withoutSleeperCab),
     route: 'paye' as 'paye' | 'umbrella', umbrellaMargin: String(UMBRELLA.weeklyMarginDefault), pension: true,
   });
+  const [nights, setNights] = useState(false);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value });
 
   const r = useMemo(() => takeHome({
     hourlyRate: n(f.hourlyRate), hoursPerWeek: n(f.hoursPerWeek),
     overtimeHours: n(f.overtimeHours), overtimeRate: n(f.overtimeRate),
-    nightsOut: n(f.nightsOut), nightOutRate: n(f.nightOutRate),
+    nightsOut: nights ? n(f.nightsOut) : 0, nightOutRate: n(f.nightOutRate),
     route: f.route, umbrellaMargin: n(f.umbrellaMargin), pension: f.pension,
-  }), [f]);
+  }), [f, nights]);
 
   const overScale = n(f.nightOutRate) > NIGHT_OUT.withoutSleeperCab;
 
@@ -47,10 +48,14 @@ export default function Calculator() {
             <input id="c-oth" type="number" inputMode="decimal" step="0.5" value={f.overtimeHours} onChange={set('overtimeHours')} /></div>
           <div className="field"><label htmlFor="c-otr">Overtime rate £/hr</label>
             <input id="c-otr" type="number" inputMode="decimal" step="0.01" value={f.overtimeRate} onChange={set('overtimeRate')} /></div>
-          <div className="field"><label htmlFor="c-nights">Nights out per week <span className="hint">Drivers only, leave blank otherwise</span></label>
-            <input id="c-nights" type="number" inputMode="numeric" step="1" min="0" max="7" value={f.nightsOut} onChange={set('nightsOut')} /></div>
-          <div className="field"><label htmlFor="c-nor">Night-out allowance £ per night</label>
-            <input id="c-nor" type="number" inputMode="decimal" step="0.01" value={f.nightOutRate} onChange={set('nightOutRate')} /></div>
+          {nights && (
+            <>
+              <div className="field"><label htmlFor="c-nights">Nights out per week</label>
+                <input id="c-nights" type="number" inputMode="numeric" step="1" min="0" max="7" value={f.nightsOut} onChange={set('nightsOut')} /></div>
+              <div className="field"><label htmlFor="c-nor">Night-out allowance £ per night</label>
+                <input id="c-nor" type="number" inputMode="decimal" step="0.01" value={f.nightOutRate} onChange={set('nightOutRate')} /></div>
+            </>
+          )}
           {f.route === 'umbrella' && (
             <div className="field"><label htmlFor="c-margin">Umbrella margin £ per week</label>
               <input id="c-margin" type="number" inputMode="decimal" step="1" value={f.umbrellaMargin} onChange={set('umbrellaMargin')} /></div>
@@ -63,7 +68,13 @@ export default function Calculator() {
             </div>
           </div>
         </div>
-        {overScale && (
+        <p className="small" style={{ marginTop: 4 }}>
+          <label style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}>
+            <input type="checkbox" checked={nights} onChange={(e) => { setNights(e.target.checked); if (!e.target.checked) setF({ ...f, nightsOut: '' }); }} />
+            I&apos;m a lorry driver paid night-out allowances
+          </label>
+        </p>
+        {nights && overScale && (
           <p className="notice small">HMRC&apos;s tax-free benchmark is {gbp(NIGHT_OUT.withoutSleeperCab)} a night without a sleeper cab ({gbp(NIGHT_OUT.withSleeperCab)} with one). Anything above that is usually taxable, so this estimate may be too high.</p>
         )}
       </div>

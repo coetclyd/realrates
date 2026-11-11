@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   if (!r) return { title: 'Region not found' };
   return {
     title: `Shift work pay in ${r.seo} – real worker reports`,
-    description: `What agencies and employers in ${r.seo} actually pay shift workers – drivers, warehouse, factory, care, security and more – reported anonymously. Compare hourly rates.`,
+    description: `What agencies and employers in ${r.seo} actually pay shift workers – warehouse, factory, care, security, hospitality, driving and more – reported anonymously. Compare hourly rates.`,
     alternates: { canonical: `/region/${r.slug}` },
   };
 }

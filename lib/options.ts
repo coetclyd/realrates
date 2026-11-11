@@ -19,11 +19,8 @@ export const REGIONS = [
   { slug: 'northern-ireland', name: 'Northern Ireland', seo: 'Northern Ireland' },
 ] as const;
 
-// What kind of shift work a report is for. HGV has extra details (licence, job type, tramping, night-outs).
+// What kind of shift work a report is for. HGV driver has a few extra details (licence, job type, tramping, night-outs).
 export const WORK_TYPES = [
-  { value: 'hgv', label: 'HGV driver' },
-  { value: 'van', label: 'Van / courier driver' },
-  { value: 'forklift', label: 'Forklift / FLT' },
   { value: 'warehouse', label: 'Warehouse' },
   { value: 'factory', label: 'Factory / production' },
   { value: 'care', label: 'Care' },
@@ -31,13 +28,17 @@ export const WORK_TYPES = [
   { value: 'cleaning', label: 'Cleaning' },
   { value: 'hospitality', label: 'Hospitality' },
   { value: 'retail', label: 'Retail' },
+  { value: 'forklift', label: 'Forklift / FLT' },
+  { value: 'van', label: 'Van / courier driver' },
+  { value: 'hgv', label: 'HGV driver' },
   { value: 'other', label: 'Other shift work' },
 ] as const;
 
 export const workLabel = (v: string | null | undefined) =>
   WORK_TYPES.find((w) => w.value === v)?.label ?? 'Shift work';
 
-export const kindLabel = (k: string) => (k === 'agency' ? 'Agency' : k === 'haulier' ? 'Haulier' : 'Direct employer');
+// 'haulier' is legacy data from the HGV-only days; it reads as a direct employer like any other.
+export const kindLabel = (k: string) => (k === 'agency' ? 'Agency' : 'Direct employer');
 
 export const LICENCES = [
   { value: 'C1', label: 'C1 (7.5t)' },

@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: { searchParams: SP }) {
         <h1>What does that job actually pay?</h1>
         <p>
           ShiftRates is a free UK site where shift workers anonymously share and compare real pay:
-          drivers, warehouse, factory, care, security, cleaning, hospitality, retail and more.
+          warehouse, factory, care, security, cleaning, hospitality, retail, driving and more.
           It&apos;s early days, so every rate shared counts.
         </p>
         <p>See what people are actually earning, not just what jobs advertise. Share your rate anonymously,

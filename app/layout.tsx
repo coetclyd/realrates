@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: `${SITE_NAME} – real pay for UK shift workers`, template: `%s | ${SITE_NAME}` },
   description:
-    'What do agencies and employers actually pay? Real, anonymous pay rates shared by UK shift workers – drivers, warehouse, factory, care, security and more – plus a take-home pay calculator.',
+    'What do agencies and employers actually pay? Real, anonymous pay rates shared by UK shift workers – warehouse, factory, care, security, hospitality, driving and more – plus a take-home pay calculator.',
   openGraph: { siteName: SITE_NAME, type: 'website' },
 };
 

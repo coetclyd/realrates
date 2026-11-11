@@ -91,7 +91,7 @@ export async function submitRate(_: FormState, fd: FormData): Promise<FormState>
   if (!oneOf(workType, WORK_TYPES)) return { error: 'Choose the kind of work.' };
   if (companyName.length < 2 || companyName.length > 80) return { error: 'Enter the agency or employer name.' };
   if (!['agency', 'direct'].includes(kindChoice)) return { error: 'Say whether it is an agency or a direct employer.' };
-  const newKind = kindChoice === 'agency' ? 'agency' : isHgv ? 'haulier' : 'employer';
+  const newKind = kindChoice === 'agency' ? 'agency' : 'employer';
   if (!oneOf(region, REGIONS)) return { error: 'Choose a region.' };
   if (isHgv && !oneOf(licence, LICENCES)) return { error: 'Choose your licence.' };
   if (isHgv && !oneOf(job, JOB_TYPES)) return { error: 'Choose a job type.' };
