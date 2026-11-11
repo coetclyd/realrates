@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 // WhatsApp + Facebook + copy link. Uses the phone's own share sheet when available.
-export default function ShareButtons({ url, text, label = 'Share with other drivers' }: { url: string; text: string; label?: string }) {
+export default function ShareButtons({ url, text, label = 'Share with other workers' }: { url: string; text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   const full = `${text} ${url}`;
   const canNative = typeof navigator !== 'undefined' && typeof navigator.share === 'function';

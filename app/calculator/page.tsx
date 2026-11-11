@@ -3,16 +3,16 @@ import Calculator from './calculator';
 import { TAX_YEAR } from '@/lib/tax-config';
 
 export const metadata: Metadata = {
-  title: `HGV driver take-home pay calculator ${TAX_YEAR}`,
-  description: `Work out your take-home pay as an HGV driver for ${TAX_YEAR}: PAYE or umbrella, overtime and tax-free night-out allowances.`,
+  title: `Take-home pay calculator for shift workers ${TAX_YEAR}`,
+  description: `Work out your take-home pay from an hourly rate for ${TAX_YEAR}: PAYE or umbrella, overtime and workplace pension.`,
   alternates: { canonical: '/calculator' },
 };
 
 export default function CalculatorPage() {
   return (
     <div style={{ maxWidth: 680 }}>
-      <h1>HGV take-home pay calculator</h1>
-      <p className="muted">PAYE or umbrella, with overtime and night-outs. Updates as you type.</p>
+      <h1>Take-home pay calculator</h1>
+      <p className="muted">PAYE or umbrella, with overtime. Updates as you type.</p>
       <Calculator />
     </div>
   );

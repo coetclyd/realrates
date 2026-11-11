@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createPlainClient } from '@supabase/supabase-js';
 import { supabaseUrl, supabaseKey } from '@/lib/supabase/env';
-import { SITE_URL, REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES } from '@/lib/options';
+import { SITE_URL, REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES, WORK_TYPES } from '@/lib/options';
 
 export type FormState = { ok?: boolean; error?: string; message?: string; email?: string; next?: string };
 
@@ -71,11 +71,13 @@ export async function submitRate(_: FormState, fd: FormData): Promise<FormState>
   if (!user) return { error: 'Your login has expired. Refresh the page and sign in again.' };
 
   const companyName = str(fd, 'company_name').replace(/\s+/g, ' ');
-  const newKind = str(fd, 'kind');
+  const workType = str(fd, 'work_type') || 'hgv';
+  const isHgv = workType === 'hgv';
+  const kindChoice = str(fd, 'kind');
   const region = str(fd, 'region');
   const postcode = str(fd, 'postcode_area').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
-  const licence = str(fd, 'licence');
-  const job = str(fd, 'job_type');
+  const licence = isHgv ? str(fd, 'licence') : '';
+  const job = isHgv ? str(fd, 'job_type') : '';
   const shift = str(fd, 'shift');
   const route = str(fd, 'pay_route');
   const canc = str(fd, 'cancellations');
@@ -83,15 +85,18 @@ export async function submitRate(_: FormState, fd: FormData): Promise<FormState>
   const month = str(fd, 'worked_month');
   const rate = num(fd, 'hourly_rate');
   const ot = num(fd, 'overtime_rate');
-  const nightOut = num(fd, 'night_out');
+  const nightOut = isHgv ? num(fd, 'night_out') : null;
   const comment = str(fd, 'comment');
 
-  if (companyName.length < 2 || companyName.length > 80) return { error: 'Enter the agency or haulier name.' };
-  if (!['agency', 'haulier'].includes(newKind)) return { error: 'Say whether it is an agency or a haulier.' };
+  if (!oneOf(workType, WORK_TYPES)) return { error: 'Choose the kind of work.' };
+  if (companyName.length < 2 || companyName.length > 80) return { error: 'Enter the agency or employer name.' };
+  if (!['agency', 'direct'].includes(kindChoice)) return { error: 'Say whether it is an agency or a direct employer.' };
+  const newKind = kindChoice === 'agency' ? 'agency' : 'employer';
   if (!oneOf(region, REGIONS)) return { error: 'Choose a region.' };
-  if (!oneOf(licence, LICENCES)) return { error: 'Choose your licence.' };
-  if (!oneOf(job, JOB_TYPES)) return { error: 'Choose a job type.' };
+  if (isHgv && !oneOf(licence, LICENCES)) return { error: 'Choose your licence.' };
+  if (isHgv && !oneOf(job, JOB_TYPES)) return { error: 'Choose a job type.' };
   if (!oneOf(shift, SHIFTS)) return { error: 'Choose a shift.' };
+  if (!isHgv && shift === 'tramping') return { error: 'Tramping is for HGV drivers. Choose days, nights or weekends.' };
   if (!oneOf(route, PAY_ROUTES)) return { error: 'Choose how you were paid.' };
   if (!['never', 'sometimes', 'often'].includes(canc)) return { error: 'Answer the cancelled shifts question.' };
   if (!['yes', 'mostly', 'no'].includes(paid)) return { error: 'Answer the paid correctly question.' };
@@ -123,7 +128,7 @@ export async function submitRate(_: FormState, fd: FormData): Promise<FormState>
     company_id: cid, region, postcode_area: postcode || null,
     site_town: str(fd, 'site_town').slice(0, 60) || null,
     client_name: str(fd, 'client_name').slice(0, 80) || null,
-    licence, job_type: job, shift, hourly_rate: rate, overtime_rate: ot, night_out: nightOut,
+    work_type: workType, licence: licence || null, job_type: job || null, shift, hourly_rate: rate, overtime_rate: ot, night_out: nightOut,
     pay_route: route, cancellations: canc, paid_correctly: paid, worked_month: `${month}-01`,
   }).select('id').single();
 

@@ -14,7 +14,7 @@ export default function Terms() {
       <h2>Sharing a rate</h2>
       <ul>
         <li>Only report jobs you have personally worked, and be accurate.</li>
-        <li>Don&apos;t name or identify individuals (managers, planners, other drivers) or include phone numbers, emails or other personal details.</li>
+        <li>Don&apos;t name or identify individuals (managers, planners, co-workers) or include phone numbers, emails or other personal details.</li>
         <li>Comments should be honest opinions based on your own experience. Don&apos;t state things as fact that you can&apos;t back up, and don&apos;t post abuse.</li>
         <li>By submitting, you allow us to publish your report as part of aggregate figures and, after checking, your comment, without your name or email.</li>
       </ul>
@@ -23,7 +23,7 @@ export default function Terms() {
       <p>We check comments and new company names before they appear, and we may edit out, refuse or remove anything that breaks these rules or that we reasonably believe is inaccurate or unlawful.</p>
 
       <h2>Accuracy</h2>
-      <p>Rates are reported by drivers and are not verified by us or by the companies listed. The take-home calculator gives estimates only and is not tax or financial advice. Always check pay with the employer and your payslip.</p>
+      <p>Rates are reported by workers and are not verified by us or by the companies listed. The take-home calculator gives estimates only and is not tax or financial advice. Always check pay with the employer and your payslip.</p>
 
       <h2>Complaints</h2>
       <p>If you believe content is wrong or unlawful, use our <Link href="/contact">complaints and removal form</Link>. We aim to respond within 5 working days.</p>

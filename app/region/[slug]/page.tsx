@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const r = find((await params).slug);
   if (!r) return { title: 'Region not found' };
   return {
-    title: `HGV driver pay in ${r.seo} – real driver reports`,
-    description: `What HGV agencies and hauliers in ${r.seo} actually pay, reported anonymously by lorry drivers. Compare hourly rates by licence and job type.`,
+    title: `Shift work pay in ${r.seo} – real worker reports`,
+    description: `What agencies and employers in ${r.seo} actually pay shift workers – warehouse, factory, care, security, hospitality, driving and more – reported anonymously. Compare hourly rates.`,
     alternates: { canonical: `/region/${r.slug}` },
   };
 }
@@ -28,20 +28,21 @@ export default async function RegionPage({ params, searchParams }: { params: Par
   if (!region) notFound();
   if (!isConfigured()) return <NotConfigured />;
   const sp = await searchParams;
-  const values = { licence: pick(sp.licence), job: pick(sp.job), shift: pick(sp.shift) };
+  const values = { work: pick(sp.work), licence: pick(sp.licence), job: pick(sp.job), shift: pick(sp.shift) };
 
   const supabase = await createClient();
   const { data } = await supabase.rpc('search_rates', {
     p_region: region.slug, p_licence: values.licence ?? null, p_job_type: values.job ?? null,
     p_shift: values.shift ?? null, p_postcode: null,
+    ...(values.work ? { p_work_type: values.work } : {}),
   });
   const rows = (data as SearchRow[]) ?? [];
 
   return (
     <>
       <p className="small"><Link href="/">← All UK</Link></p>
-      <h1>HGV driver pay in {region.seo}</h1>
-      <p className="muted">Real hourly rates reported anonymously by drivers working in {region.seo}.</p>
+      <h1>Shift work pay in {region.seo}</h1>
+      <p className="muted">Real hourly rates reported anonymously by shift workers in {region.seo}.</p>
       <Filters values={values} action={`/region/${region.slug}`} />
       <h2>{rows.length} {rows.length === 1 ? 'company' : 'companies'}</h2>
       <Results rows={rows} />
