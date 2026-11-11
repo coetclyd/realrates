@@ -1,4 +1,4 @@
--- DRAFT, NOT APPLIED. Run AFTER 2026-11-11-work-types.sql (needs the 'employer' company kind).
+-- APPLIED to production on 2026-11-11 (after 2026-11-11-work-types.sql), approved by Clyde.
 -- Adds well-known UK shift-work employers and agencies to the company picker so people outside
 -- driving find their employer, and so the same company isn't added twice under slightly different
 -- names. Skips any name already there. Seeded names are approved; nothing shows publicly until a

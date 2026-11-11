@@ -1,3 +1,4 @@
+-- NOTE: applied migrations in supabase/migrations/ change this baseline (see 2026-11-11-work-types.sql).
 -- RealRates database schema
 -- Paste this whole file into Supabase > SQL Editor > New query, then click Run.
 -- Safe to run once on a fresh project.

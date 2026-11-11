@@ -1,4 +1,4 @@
--- DRAFT, NOT APPLIED. Needs Clyde's approval before running on the live project (ikjzwuapnkyltlktkoyl).
+-- APPLIED to production (ikjzwuapnkyltlktkoyl) on 2026-11-11, approved by Clyde.
 -- Opens rate reporting to all shift workers (HGV, van, warehouse, care, security ...), not just HGV drivers.
 --
 -- Safe order: apply this BEFORE merging the matching code. The current live code keeps working afterwards:
