@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { submitRate, type FormState } from '../actions';
 import { REGIONS, LICENCES, JOB_TYPES, SHIFTS, PAY_ROUTES, SITE_NAME, WORK_TYPES } from '@/lib/options';
 import ShareButtons from '../share-buttons';
+import LoginForm from '../login-form';
+import type { SocialProvider } from '@/lib/auth-providers';
+import { saveDraft, loadDraft, clearDraft, applyDraft } from '@/lib/draft';
 
 function Choices({ name, options, required = true, onPick }: { name: string; options: readonly { value: string; label: string }[]; required?: boolean; onPick?: (v: string) => void }) {
   return (
@@ -19,7 +22,9 @@ function Choices({ name, options, required = true, onPick }: { name: string; opt
   );
 }
 
-export default function SubmitForm({ companies, siteUrl }: { companies: { name: string }[]; siteUrl: string }) {
+export default function SubmitForm({ companies, siteUrl, signedIn, providers = [] }: {
+  companies: { name: string }[]; siteUrl: string; signedIn: boolean; providers?: SocialProvider[];
+}) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitRate, {});
   const formRef = useRef<HTMLFormElement>(null);
   const [work, setWork] = useState('');
@@ -28,9 +33,31 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
   const topRef = useRef<HTMLDivElement>(null);
   const now = new Date();
   const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  // Questions first, sign-in last: answers are kept in this browser while the person signs in.
+  const [askSignIn, setAskSignIn] = useState(false);
+  const [restored, setRestored] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
+  const signInRef = useRef<HTMLDivElement>(null);
+
+  // On load, bring back any unsent answers. Work type first, so HGV-only fields exist before the rest.
+  useEffect(() => {
+    const d = loadDraft();
+    if (!d) return;
+    setWork(d.fields.work_type ?? '');
+    setPendingDraft(d.fields);
+  }, []);
+  useEffect(() => {
+    if (!pendingDraft || !formRef.current) return;
+    applyDraft(formRef.current, pendingDraft);
+    setPendingDraft(null);
+    if (signedIn) setRestored(true);
+  }, [pendingDraft, work, signedIn]);
+  useEffect(() => {
+    if (askSignIn) signInRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [askSignIn]);
 
   useEffect(() => {
-    if (state.ok) { formRef.current?.reset(); setWork(''); }
+    if (state.ok) { formRef.current?.reset(); setWork(''); clearDraft(); setRestored(false); }
     if (state.ok || state.error) topRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [state]);
 
@@ -49,8 +76,19 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
         </div>
       )}
       {state.error && <div className="notice error" role="alert" style={{ marginBottom: 16 }}>{state.error}</div>}
+      {restored && !state.ok && (
+        <div className="notice success" role="status" style={{ marginBottom: 16 }}>
+          <strong>You&apos;re signed in and your answers are back.</strong> Check them, then tap &ldquo;Share my rate anonymously&rdquo; at the bottom.
+        </div>
+      )}
 
-      <form ref={formRef} action={action} className="card">
+      <form
+        ref={formRef}
+        action={signedIn ? action : undefined}
+        onSubmit={signedIn ? undefined : (e) => { e.preventDefault(); saveDraft(e.currentTarget); setAskSignIn(true); }}
+        onChange={(e) => saveDraft(e.currentTarget)}
+        className="card"
+      >
         <div className="field">
           <label>What kind of work?</label>
           <Choices name="work_type" options={WORK_TYPES} onPick={setWork} />
@@ -148,11 +186,27 @@ export default function SubmitForm({ companies, siteUrl }: { companies: { name: 
           <textarea id="comment" name="comment" maxLength={300} />
         </div>
 
-        <button className="btn block" disabled={pending}>{pending ? 'Saving…' : 'Share my rate anonymously'}</button>
+        <button className="btn block" disabled={pending}>
+          {!signedIn ? 'Continue' : pending ? 'Saving…' : 'Share my rate anonymously'}
+        </button>
         <p className="small muted" style={{ marginTop: 10 }}>
           Your email is never shown. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
         </p>
       </form>
+
+      {!signedIn && askSignIn && (
+        <div ref={signInRef} style={{ marginTop: 20 }}>
+          <h2>Last step: confirm you&apos;re a real person</h2>
+          <p className="small muted">
+            Your answers are saved on this device. A quick sign-in stops fake reports. Your email is never shown or linked to your rate,
+            and nothing is shared until you press Share on the next screen.
+          </p>
+          <LoginForm next="/submit" providers={providers} />
+          <p className="small muted" style={{ marginTop: 10 }}>
+            Using the email link? Open it on this same phone or browser so your answers are still here.
+          </p>
+        </div>
+      )}
     </>
   );
 }
