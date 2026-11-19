@@ -12,7 +12,7 @@ test('round trip through JSON', () => {
   assert.deepEqual(parseDraft(JSON.stringify(d), 6000), d);
 });
 
-test('expires after a day and rejects junk', () => {
+test('expires after 2 hours and rejects junk', () => {
   const d = JSON.stringify(entriesToDraft([['region', 'london']], 0));
   assert.equal(parseDraft(d, DRAFT_TTL_MS + 1), null);
   assert.equal(parseDraft('not json'), null);

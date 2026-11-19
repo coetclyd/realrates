@@ -190,6 +190,16 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
           {!signedIn ? 'Continue' : pending ? 'Saving…' : 'Share my rate anonymously'}
         </button>
         <p className="small muted" style={{ marginTop: 10 }}>
+          Your answers are kept on this device for up to 2 hours until you share.{' '}
+          <button
+            type="button"
+            className="linkbtn"
+            onClick={() => { clearDraft(); formRef.current?.reset(); setWork(''); setRestored(false); setAskSignIn(false); }}
+          >
+            Clear my answers
+          </button>
+        </p>
+        <p className="small muted" style={{ marginTop: 6 }}>
           Your email is never shown. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
         </p>
       </form>
