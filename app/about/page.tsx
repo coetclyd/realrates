@@ -18,7 +18,7 @@ export default function About() {
       <p>You report the kind of work, hourly rate and shift for a job you&apos;ve done (HGV drivers can add a few driving details). We show the median and range for each company, separately for each kind of work.</p>
       <h2>How we protect you</h2>
       <p>
-        Your email is only used to log in and stop spam. It is never shown or linked to your rates on the site. A
+        Your email is only used to log in and stop spam. It is never displayed publicly with your rates on the site. A
         company&apos;s figures only appear once at least 3 people have reported the same kind of work there, and we only record the month you worked,
         not exact dates. Comments are checked before they go live, and anything naming individuals is removed.
       </p>

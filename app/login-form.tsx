@@ -21,7 +21,7 @@ export default function LoginForm({ next = '/submit', providers = [] }: { next?:
       <div className="field">
         <label htmlFor="email">
           Your email
-          <span className="hint">We email you a sign-in link. Your email is never shown or linked to your rates.</span>
+          <span className="hint">We email you a sign-in link. Your email is never displayed publicly with your rates.</span>
         </label>
         <input id="email" name="email" type="email" inputMode="email" autoComplete="email" required />
       </div>

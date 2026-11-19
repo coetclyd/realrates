@@ -200,7 +200,7 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
           </button>
         </p>
         <p className="small muted" style={{ marginTop: 6 }}>
-          Your email is never shown. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
+          Your email is never displayed publicly with your rate. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
         </p>
       </form>
 
@@ -208,7 +208,7 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
         <div ref={signInRef} style={{ marginTop: 20 }}>
           <h2>Last step: confirm you&apos;re a real person</h2>
           <p className="small muted">
-            Your answers are saved on this device. A quick sign-in stops fake reports. Your email is never shown or linked to your rate,
+            Your answers are saved on this device. A quick sign-in stops fake reports. Your email is never displayed publicly with your rate,
             and nothing is shared until you press Share on the next screen.
           </p>
           <LoginForm next="/submit" providers={providers} />
