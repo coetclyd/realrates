@@ -25,3 +25,9 @@ test('long values are capped', () => {
   const d = entriesToDraft([['comment', 'x'.repeat(1000)]], 1);
   assert.equal(d.fields.comment.length, 400);
 });
+
+test("ignores React's hidden server-action fields", () => {
+  const d = entriesToDraft([['$ACTION_KEY', 'abc'], ['$ACTION_1:0', '{}'], ['work_type', 'care']], 1);
+  assert.deepEqual(d.fields, { work_type: 'care' });
+  assert.deepEqual(parseDraft(JSON.stringify({ savedAt: 1, fields: { $ACTION_KEY: 'x', region: 'london' } }), 2).fields, { region: 'london' });
+});
