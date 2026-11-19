@@ -38,6 +38,16 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
   const [restored, setRestored] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<Record<string, string> | null>(null);
   const signInRef = useRef<HTMLDivElement>(null);
+  const [cleared, setCleared] = useState(false);
+  const clearAll = () => {
+    (document.activeElement as HTMLElement | null)?.blur?.();
+    formRef.current?.reset();
+    setWork(''); setRestored(false); setAskSignIn(false); setPendingDraft(null);
+    clearDraft();
+    setTimeout(clearDraft, 300); // a late iOS 'change' event from the blurred field must not re-save it
+    setCleared(true);
+    setTimeout(() => setCleared(false), 4000);
+  };
 
   // On load, bring back any unsent answers. Work type first, so HGV-only fields exist before the rest.
   useEffect(() => {
@@ -86,7 +96,7 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
         ref={formRef}
         action={signedIn ? action : undefined}
         onSubmit={signedIn ? undefined : (e) => { e.preventDefault(); saveDraft(e.currentTarget); setAskSignIn(true); }}
-        onChange={(e) => saveDraft(e.currentTarget)}
+        onChange={(e) => { setCleared(false); saveDraft(e.currentTarget); }}
         className="card"
       >
         <div className="field">
@@ -189,16 +199,19 @@ export default function SubmitForm({ companies, siteUrl, signedIn, providers = [
         <button className="btn block" disabled={pending}>
           {!signedIn ? 'Continue' : pending ? 'Saving…' : 'Share my rate anonymously'}
         </button>
-        <p className="small muted" style={{ marginTop: 10 }}>
-          Your answers are kept on this device for up to 2 hours until you share.{' '}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginTop: 12 }}>
           <button
             type="button"
-            className="linkbtn"
-            onClick={() => { clearDraft(); formRef.current?.reset(); setWork(''); setRestored(false); setAskSignIn(false); }}
+            className="btn secondary small"
+            style={{ minHeight: 44, touchAction: 'manipulation' }}
+            onPointerDown={(e) => e.preventDefault() /* keep focus: first tap works with the iPhone keyboard open */}
+            onClick={clearAll}
           >
             Clear my answers
           </button>
-        </p>
+          <span className="small muted">Answers are kept on this device for up to 2 hours until you share.</span>
+        </div>
+        {cleared && <p className="small muted" role="status" style={{ marginTop: 6 }}>Cleared. Nothing was saved or sent.</p>}
         <p className="small muted" style={{ marginTop: 6 }}>
           Your email is never displayed publicly with your rate. Figures only appear once 3 people have reported the same kind of work at a company. See our <Link href="/privacy">privacy policy</Link>.
         </p>
